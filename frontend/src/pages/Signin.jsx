@@ -26,7 +26,7 @@ const Signin = () => {
       const data = await response.json();
       if (data.success) {
         setIsLoggedIn(true, data.user, data.token);
-        navigate('/dashboard-home');
+        navigate('/');
       } else {
         setError(data.message || 'Login failed');
       }

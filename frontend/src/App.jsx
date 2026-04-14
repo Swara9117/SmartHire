@@ -20,6 +20,9 @@ import Footer from './components/Common/Footer';
 import Setting from './pages/Settings';
 import DashboardHomePage from './pages/DashboardHomePage';
 import { AuthProvider } from './context/AuthContext';
+import CandidateSignup from './pages/CandidateSignup';
+import CandidateProfile from './pages/CandidateProfile';
+import CandidateLeaderboard from './pages/CandidateLeaderboard';
 
 export default function App() {
   return (
@@ -27,7 +30,7 @@ export default function App() {
       <BrowserRouter>
         <div className="flex flex-col min-h-screen">
           <NavBar />
-          
+
           {/* Main content */}
           <main className="flex-grow">
             <Routes>
@@ -48,6 +51,9 @@ export default function App() {
               <Route path="/setting" element={<Setting />} />
               <Route path="/dashboard-home" element={<DashboardHomePage />} />
               <Route path="/virtual-office" element={<VirtualWorkSim />} />
+              <Route path="/candidate-signup" element={<CandidateSignup />} />
+              <Route path="/candidate-profile/:emailid" element={<CandidateProfile />} />
+              <Route path="/leaderboards" element={<CandidateLeaderboard />} />
             </Routes>
           </main>
 

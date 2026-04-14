@@ -29,6 +29,7 @@ import interviewRoutes from "./routes/interview.js";
 import userRoutes from "./routes/user.js";
 import gdRoutes from "./routes/gdRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
+import candidateRoutes from "./routes/candidateRoutes.js";
 
 // app.use(cors());
 //cors for both fasAPI_backend and frontend
@@ -130,6 +131,7 @@ app.use('/api/gd', gdRoutes);
 app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/candidate', candidateRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

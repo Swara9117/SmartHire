@@ -29,7 +29,7 @@ const navigation = [
   { name: 'Interview Simulator', href: '/technical-interview', current: false },
   { name: 'HR Round', href: '/hr-interview', current: false },
   //{ name: 'GD Practice', href: '/gd-rooms', current: false },
-  { name: 'Leaderboard', href: '/virtual-office', current: false },
+  { name: 'Leaderboard', href: '/leaderboards', current: false },
 ];
 
 const defaultNotifications = [

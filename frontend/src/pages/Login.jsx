@@ -41,7 +41,7 @@ const Login = () => {
       if (response.success) {
         localStorage.setItem("token", response.token);
         localStorage.setItem("user", JSON.stringify(response.user));
-        navigate("/dashboard");
+        navigate("/");
       } else {
         setError(response.message || 'Login failed');
       }

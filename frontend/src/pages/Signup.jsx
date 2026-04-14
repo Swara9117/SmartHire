@@ -13,7 +13,9 @@ const Signup = () => {
     username: '',
     emailid: '',
     password: '',
-    role: '',
+    role: 'Candidate',
+    leetcodeUsername: '',
+    gfgUsername: '',
   });
 
   const sendOtpRegister = async (userData) => {
@@ -110,18 +112,26 @@ const Signup = () => {
               )}
             </span>
           </div>
-          <select
-            className="p-3 bg-gray-700 border border-indigo-400 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-            disabled={isLoading}
-          >
-            <option value="">Select Role</option>
-            <option value="Candidate">Candidate</option>
-            <option value="Recruiter">Recruiter</option>
-          </select>
+            <div className="flex flex-col gap-4">
+              <input
+                className="p-3 bg-gray-700 border border-indigo-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-300"
+                type="text"
+                name="leetcodeUsername"
+                placeholder="LeetCode Username (Optional)"
+                value={formData.leetcodeUsername}
+                onChange={handleChange}
+                disabled={isLoading}
+              />
+              <input
+                className="p-3 bg-gray-700 border border-indigo-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-300"
+                type="text"
+                name="gfgUsername"
+                placeholder="GeeksForGeeks Username (Optional)"
+                value={formData.gfgUsername}
+                onChange={handleChange}
+                disabled={isLoading}
+              />
+            </div>
           <button
             type="submit"
             className={`mt-4 p-3 rounded-lg font-semibold text-white uppercase tracking-wide transition-colors ${

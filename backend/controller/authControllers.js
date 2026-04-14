@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import Pw_Reset from "../models/forgotpassword.js";
+import calculateScore from "../utils/scraper.js";
 import nodemailer from "nodemailer";
 import dotenv from 'dotenv'; 
 import path from "path";
@@ -54,7 +55,7 @@ export const register = async (req, res) => {
 
 export const sendOtpRegister = async (req, res) => {
   try {
-    const {username, emailid, password, role } = req.body;
+    const {username, emailid, password, role, leetcodeUsername, gfgUsername } = req.body;
 
     if (!emailid || !username || !role || !password) {
       return res.status(400).json({ message: "Email, username, role, and password are required" });
@@ -70,6 +71,8 @@ export const sendOtpRegister = async (req, res) => {
       // If user exists but is not verified, update OTP
       user.otp = Math.floor(100000 + Math.random() * 900000).toString();
       user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
+      if (leetcodeUsername) user.leetcodeUsername = leetcodeUsername;
+      if (gfgUsername) user.gfgUsername = gfgUsername;
       await user.save();
     } else {
       // Create new user with all fields
@@ -79,6 +82,8 @@ export const sendOtpRegister = async (req, res) => {
         password, // Will be hashed after OTP verification
         role,
         isVerified: false,
+        leetcodeUsername: leetcodeUsername || "",
+        gfgUsername: gfgUsername || "",
         otp: Math.floor(100000 + Math.random() * 900000).toString(),
         otpExpires: new Date(Date.now() + 10 * 60 * 1000),
       });
@@ -153,6 +158,15 @@ export const VerifyRegister = async (req, res) => {
     user.isVerified = true;
     user.otp = undefined;
     user.otpExpires = undefined;
+
+    // Calculate scores if role is Candidate and usernames are present
+    if (user.role === "Candidate" && (user.leetcodeUsername || user.gfgUsername)) {
+      console.log(`Scraping scores for ${user.leetcodeUsername} & ${user.gfgUsername}`);
+      const { totalScore, leetcodeScore, gfgScore } = await calculateScore(user.leetcodeUsername, user.gfgUsername);
+      user.leetcodeScore = leetcodeScore;
+      user.gfgScore = gfgScore;
+      user.aceboardScore = totalScore;
+    }
 
     await user.save();
 

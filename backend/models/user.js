@@ -23,6 +23,11 @@ const schema=new mongoose.Schema({
     isVerified: { type: Boolean, default: false }, // NEW FIELD
     otp: { type: String }, // Store OTP temporarily
     otpExpires: { type: Date }, // Store OTP expiration time
+    leetcodeUsername: { type: String, default: "" },
+    gfgUsername: { type: String, default: "" },
+    leetcodeScore: { type: Number, default: 0 },
+    gfgScore: { type: Number, default: 0 },
+    aceboardScore: { type: Number, default: 0 },
     },
     {timestamps:true}
 )
