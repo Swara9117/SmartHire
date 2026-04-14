@@ -1,0 +1,115 @@
+/* Main container */
+.verify-otp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: #111827; /* bg-gray-900 */
+    padding: 20px;
+}
+
+/* OTP Card */
+.verify-otp-card {
+    background: #1f2937; /* bg-gray-800 */
+    padding: 2.5rem;
+    border-radius: 1rem; /* rounded-2xl */
+    text-align: center;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #fff;
+    border: 1px solid #4f46e5; /* border-indigo-400 */
+}
+
+/* Heading */
+.verify-otp-card h2 {
+    font-size: 2.25rem; /* text-4xl */
+    font-weight: bold;
+    margin-bottom: 1.5rem; /* mb-6 */
+    color: #818cf8; /* text-indigo-400 */
+}
+
+/* Text */
+.verify-otp-card p {
+    font-size: 1rem;
+    margin-bottom: 1.125rem; /* mb-4 */
+    color: #d1d5db; /* text-gray-300 */
+    line-height: 1.5;
+}
+
+/* OTP Input Container */
+.otp-input-container {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 1.25rem; /* mb-5 */
+}
+
+/* OTP Input Fields */
+.otp-input {
+    width: 45px;
+    height: 50px;
+    font-size: 1.5rem;
+    text-align: center;
+    border: 2px solid #4f46e5; /* border-indigo-400 */
+    border-radius: 0.5rem; /* rounded-lg */
+    background: #374151; /* bg-gray-700 */
+    color: #fff;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.otp-input:focus {
+    border-color: #6366f1; /* focus:ring-indigo-500 */
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Button */
+.verify-otp-btn {
+    width: 80%;
+    padding: 12px;
+    border: none;
+    border-radius: 0.5rem; /* rounded-lg */
+    font-size: 1.1rem;
+    font-weight: 600; /* font-semibold */
+    color: #fff;
+    background: #4f46e5; /* bg-indigo-600 */
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-transform: uppercase;
+    letter-spacing: 0.05em; /* tracking-wide */
+}
+
+.verify-otp-btn:hover {
+    background: #4338ca; /* hover:bg-indigo-700 */
+    transform: translateY(-1px);
+}
+
+.verify-otp-btn:active {
+    transform: translateY(0);
+}
+
+/* Attempts Info */
+.attempts-info {
+    margin-top: 1rem; /* mt-4 */
+    font-size: 0.875rem; /* text-sm */
+    color: #818cf8; /* text-indigo-400 */
+    font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .otp-input {
+        width: 40px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+
+    .verify-otp-btn {
+        font-size: 1rem;
+        width: 90%;
+    }
+}

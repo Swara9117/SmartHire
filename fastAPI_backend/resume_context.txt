@@ -1,0 +1,64 @@
+ISHITA RANE
+BTech Undergraduate (Electronics and Telecommunication)
+with Honours in Cybersecurity.
+ishita.rane@cumminscollege.in
++91 7666538805
+Pune, Maharashtra
+https://www.linkedin.com/in/ishita-rane-9225b0282/
+https://github.com/Student-IshitaRane
+EDUCATION PROJECTS
+MKSSS’s Cummins College of
+NextHire- LinkedIn CoachIn Hackathon
+Engineering for Women, Pune
+Built full-stack AI-powered mock interview and resume
+2023-2027
+analysis platform using Gemini API and AssemblyAI for
+CGPA - 9.05 (current) sentiment and speech analysis. Developed GD rooms with
+real-time AI feedback on communication and confidence,
+New Pune Public School, Nigdi
+and designed an HR mock interview analyzing responses
+2021-2023
+using the STAR method.
+HSC Board - 76%
+Jnana Prabodhini Navanagar Vidyalaya MetroTrack- Metro management system
+2010 - 2021
+Developed a full-stack web application using HTML, CSS,
+SSC Board - 94%
+JavaScript, Node.js, Express.js, and MySQL for efficient
+metro operations management. Implemented features for
+TECHNICAL SKILLS
+station and route management, fare calculation,
+passenger registration, and ticket booking, with dedicated
+Java(Data Structures and Algorithm) admin and user interfaces for streamlined control and
+Machine Learning in Python accessibility.
+HTML, CSS, Javascript
+Smart Placement Portal– CodeSprint Hackathon
+DBMS, OS, OOPs
+Built a role-based web platform for automated student
+MySQL
+filtering, company postings, and targeted notifications.
+SOFT SKILLS Integrated coding leaderboards (LeetCode, Codeforces,
+GFG) and real-time dashboards for application tracking
+and performance insights.
+Problem Solving
+Leadership SmartFarm – Weather-Based Crop Prediction System
+Teamwork
+Developed a machine learning model using Naive Bayes,
+Communication
+Decision Tree, and Linear Regression to recommend
+Time Management
+optimal crops based on soil and environmental data,
+achieving 95% accuracy with Naive Bayes and deploying
+POSITION OF
+a real-time decision tool for farmers.
+RESPONSIBILITY
+ACHIEVEMENTS
+Google Developer Groups CCOEW
+Head of Design Team Solved 300+ questions on Leetcode
+Internal Hackathon SIH 2025 Winner
+GDG WOW 2025, Pune Winner at LinkedIn CoachIn GEN-AI Hackathon
+Selected for LinkedIn CoachIn program 2025 - Top 80
+Design Specialist
+Selected for Microsoft SEFA 2025 among top 100
+Wings Magazine,CCOEW Grace Hopper Celebration India 2024 scholar
+Design Specialist Winner of the IEEE poster presentation competition 2024
