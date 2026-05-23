@@ -15,11 +15,14 @@ const schema=new mongoose.Schema({
     },
     role: {
         type: String,
-        enum: ["Candidate", "Recruiter"],
+        enum: ["Candidate", "Recruiter", "Admin"],
+        default: "Candidate",
     },
-    // resumeURL: {
-    //     type: String, //cloudinary URL fetched 
-    // },
+    resumeURL: { type: String, default: "" },
+    resumeText: { type: String, default: "" },
+    skills: [{ type: String }],
+    bio: { type: String, default: "" },
+    company: { type: String, default: "" },
     isVerified: { type: Boolean, default: false }, // NEW FIELD
     otp: { type: String }, // Store OTP temporarily
     otpExpires: { type: Date }, // Store OTP expiration time

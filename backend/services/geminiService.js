@@ -152,4 +152,74 @@ ${resumeText}
   }
 };
 
-export { analyzeResumeWithGemini };
+const getJobRecommendations = async (profile, jobs) => {
+  const jobsSummary = jobs.map((j, i) => ({
+    index: i,
+    id: j._id.toString(),
+    title: j.title,
+    company: j.company,
+    skills: j.skills,
+    requirements: j.requirements,
+    location: j.location,
+    jobType: j.jobType,
+  }));
+
+  const prompt = `
+You are a career AI assistant. Given a candidate profile and open job listings, recommend the best matching jobs.
+
+Candidate Profile:
+- Name: ${profile.username}
+- Skills: ${(profile.skills || []).join(", ") || "Not specified"}
+- Bio: ${profile.bio || "Not specified"}
+- LeetCode Score: ${profile.leetcodeScore || 0}
+- GFG Score: ${profile.gfgScore || 0}
+- Resume excerpt: ${profile.resumeText || "Not available"}
+
+Jobs:
+${JSON.stringify(jobsSummary, null, 2)}
+
+Return STRICT JSON only (no markdown):
+{
+  "recommendations": [
+    {
+      "jobId": "string (from jobs list)",
+      "matchScore": number (0-100),
+      "reason": "string (1-2 sentences)"
+    }
+  ]
+}
+
+Return top 5 matches sorted by matchScore descending. Only include jobs from the provided list.
+`;
+
+  let text = null;
+  for (const modelName of MODEL_LIST) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      text = await generateGeminiContentWithRetry(model, prompt);
+      break;
+    } catch (error) {
+      if (!isRetryableGeminiError(error)) throw error;
+    }
+  }
+
+  if (!text) {
+    return jobs.slice(0, 5).map((j) => ({
+      jobId: j._id.toString(),
+      job: j,
+      matchScore: 70,
+      reason: "Based on available openings",
+    }));
+  }
+
+  const cleanText = text.replace(/```json|```/g, "").trim();
+  const parsed = JSON.parse(cleanText);
+  const enriched = (parsed.recommendations || []).map((rec) => {
+    const job = jobs.find((j) => j._id.toString() === rec.jobId);
+    return { ...rec, job };
+  }).filter((r) => r.job);
+
+  return enriched;
+};
+
+export { analyzeResumeWithGemini, getJobRecommendations };

@@ -12,7 +12,7 @@ export default function Footer() {
               alt="InterviewVerse Logo"
               className="w-10 h-10 rounded-full object-cover"
             />
-            <span className="ml-3 text-xl">NextHire</span>
+            <span className="ml-3 text-xl">SmartHire</span>
           </a>
           <p className="mt-2 text-sm text-gray-500">
             Empower your career journey with AI-powered insights and simulations.
@@ -71,7 +71,7 @@ export default function Footer() {
       <div className="bg-gray-800 bg-opacity-75">
         <div className="container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row">
           <p className="text-gray-400 text-sm text-center sm:text-left">
-            © {new Date().getFullYear()} NextHire
+            © {new Date().getFullYear()} SmartHire
           </p>
           <span className="inline-flex sm:ml-auto sm:mt-0 mt-2 justify-center sm:justify-start">
             <a className="text-gray-400 hover:text-white" href="#"><i className="fab fa-facebook-f w-5 h-5"></i></a>

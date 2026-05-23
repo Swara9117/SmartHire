@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import API_BASE from '../utils/api';
 
 const Signin = () => {
   const navigate = useNavigate();
@@ -18,20 +19,31 @@ const Signin = () => {
     e.preventDefault();
     setError('');
     try {
-      const response = await fetch('http://localhost:4000/auth/login', {
+      const response = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ emailid: formData.emailid, password: formData.password }),
       });
-      const data = await response.json();
-      if (data.success) {
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error('Invalid response from server');
+      }
+      if (response.ok && data.success) {
         setIsLoggedIn(true, data.user, data.token);
-        navigate('/');
+        const role = data.user?.role;
+        if (role === 'Recruiter') navigate('/recruiter/dashboard');
+        else if (role === 'Admin') navigate('/admin/dashboard');
+        else navigate('/');
       } else {
-        setError(data.message || 'Login failed');
+        setError(data.message || `Login failed (${response.status})`);
       }
     } catch (err) {
-      setError('Server error');
+      setError(
+        'Cannot reach backend. Start it with: cd backend && npm start (port 4000). ' +
+        'If it runs but login fails, check MongoDB in backend/.env.'
+      );
       console.error(err);
     }
   };

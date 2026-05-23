@@ -113,7 +113,7 @@ This OTP is valid for 10 minutes. Please do not share it with anyone.
 If you did not request this, please ignore this email.
 
 Thank you,  
-NextHire`,
+SmartHire`,
     });
 
     return res.status(200).json({ message: "OTP sent successfully" });
@@ -208,7 +208,7 @@ export const login = async (req, res) => {
     delete userObject.password;
 
     const token = jwt.sign(
-      { id: currentUser._id, emailid: currentUser.emailid },
+      { id: currentUser._id, emailid: currentUser.emailid, role: currentUser.role },
       key,
       { expiresIn: "7d" }
     );

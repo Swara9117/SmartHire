@@ -24,10 +24,10 @@ const HomePage = () => {
           </div>
 
           <h1 className="title-font sm:text-6xl text-5xl mb-6 font-bold text-indigo-400 drop-shadow-md tracking-tight leading-tight">
-            Welcome to NextHire
+            Welcome to SmartHire
           </h1>
           <p className="mb-8 leading-relaxed text-lg text-gray-400 max-w-xl">
-            Master the art of interviewing and thrive in simulated work environments. NextHire empowers you to build confidence, communication, and technical acumen — before the real job begins.
+            SmartHire is your AI-powered job portal — browse jobs, get personalized recommendations, apply with one click, and sharpen your interview skills with our prep tools.
           </p>
 
           <div className="flex justify-center w-full">
@@ -61,6 +61,23 @@ const HomePage = () => {
             <p className="lg:w-2/3 mx-auto leading-relaxed text-base">
               Your one-stop platform for mastering technical, HR, and mock interviews with AI-powered tools and expert insights.
             </p>
+          </div>
+
+          <div className="mb-12 grid md:grid-cols-3 gap-6">
+            {[
+              { title: "Browse Jobs", desc: "Explore open positions from top companies", path: "/jobs" },
+              { title: "AI Job Match", desc: "Get personalized job recommendations", path: "/job-recommendations" },
+              { title: "For Recruiters", desc: "Post jobs and manage applicants", path: "/signup" },
+            ].map((item) => (
+              <div
+                key={item.title}
+                onClick={() => navigate(item.path)}
+                className="bg-indigo-900/30 border border-indigo-500/50 p-6 rounded-2xl cursor-pointer hover:bg-indigo-900/50 transition"
+              >
+                <h3 className="text-lg font-semibold text-white">{item.title}</h3>
+                <p className="text-gray-400 text-sm mt-2">{item.desc}</p>
+              </div>
+            ))}
           </div>
 
           <div className="flex flex-wrap -m-4">

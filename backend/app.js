@@ -12,12 +12,10 @@ import { WebSocketServer } from 'ws';
 
 dotenv.config({ path: fileURLToPath(new URL('./.env', import.meta.url)) });
 const app = express();
-app.use(express.json());
 
 const server = http.createServer(app);
 const PORT = process.env.PORT || 4000;
-
-app.use(cors());
+const FRONTEND_ORIGIN = process.env.FRONTEND_URL || 'http://localhost:5173';
 
 const FASTAPI_URL = "http://localhost:8000";
 
@@ -30,15 +28,20 @@ import userRoutes from "./routes/user.js";
 import gdRoutes from "./routes/gdRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import candidateRoutes from "./routes/candidateRoutes.js";
+import jobRoutes from "./routes/jobRoutes.js";
+import applicationRoutes from "./routes/applicationRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import recommendationRoutes from "./routes/recommendationRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
+import path from "path";
 
 // app.use(cors());
 //cors for both fasAPI_backend and frontend
 
-// Configure CORS for your frontend (5173)
 app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: ['GET', 'POST'],
-  credentials: true
+  origin: [FRONTEND_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  credentials: true,
 }));
 
 // Rate limiting
@@ -124,6 +127,25 @@ export const sendNotificationToUser = (userId, notification) => {
   }
 };
 
+app.get('/api/health', (req, res) => {
+  const dbConnected = mongoose.connection.readyState === 1;
+  res.status(dbConnected ? 200 : 503).json({
+    status: dbConnected ? 'ok' : 'degraded',
+    dbConnected,
+    services: ['resume', 'gd', 'jobs', 'applications', 'admin', 'recommendations'],
+    timestamp: new Date().toISOString(),
+  });
+});
+
+app.use((req, res, next) => {
+  if (req.path === '/api/health') return next();
+  if (mongoose.connection.readyState === 1) return next();
+  return res.status(503).json({
+    success: false,
+    message: 'Database is not connected. Check MongoDB (Atlas IP whitelist or use local MongoDB).',
+  });
+});
+
 // Routes
 app.use("/interviews", interviewRoutes);
 app.use('/api/resume', resumeRoutes);
@@ -132,15 +154,15 @@ app.use("/auth", authRoutes);
 app.use("/users", userRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/candidate', candidateRoutes);
+app.use('/api/jobs', jobRoutes);
+app.use('/api/applications', applicationRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/recommendations', recommendationRoutes);
+app.use('/api/profile', profileRoutes);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'ok',
-    services: ['resume', 'gd'],
-    timestamp: new Date().toISOString()
-  });
-});
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -152,17 +174,49 @@ app.use((err, req, res, next) => {
   });
 });
 
-mongoose.connect(process.env.MONGO_URL)
-  .then(() => {
-    console.log("Database Connected successfully!");
-    // server.listen(PORT, () => console.log(`Running on port ${PORT}`));
-  })
-  .catch((error) => {
-    console.error("Database connection failed", error.message);
-    process.exit(1);
-  });
+const maskMongoUri = (uri) => uri.replace(/\/\/([^@/]+)@/, '//***@');
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`CORS configured for frontend: http://localhost:5173`);
-});
+const connectDatabase = async () => {
+  const candidates = [
+    process.env.MONGO_URL,
+    process.env.MONGO_URI,
+    process.env.MONGO_LOCAL_URL,
+    'mongodb://127.0.0.1:27017/smarthire',
+    'mongodb://localhost:27017/smarthire',
+  ].filter(Boolean);
+
+  const uniqueUris = [...new Set(candidates)];
+  let lastError;
+
+  for (const uri of uniqueUris) {
+    try {
+      await mongoose.connect(uri, { serverSelectionTimeoutMS: 8000 });
+      console.log(`Database connected (${maskMongoUri(uri)})`);
+      return;
+    } catch (error) {
+      lastError = error;
+      console.warn(`MongoDB connection failed (${maskMongoUri(uri)}): ${error.message}`);
+    }
+  }
+
+  throw lastError || new Error('No MongoDB URI configured');
+};
+
+const startServer = async () => {
+  try {
+    await connectDatabase();
+    server.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`CORS configured for frontend: ${FRONTEND_ORIGIN}`);
+    });
+  } catch (error) {
+    console.error('Database connection failed:', error.message);
+    console.error(
+      'Tip: For Atlas, whitelist your IP at https://cloud.mongodb.com → Network Access.\n' +
+      'Or set MONGO_LOCAL_URL=mongodb://127.0.0.1:27017/smarthire in backend/.env (local MongoDB must be running).'
+    );
+    process.exit(1);
+  }
+};
+
+startServer();

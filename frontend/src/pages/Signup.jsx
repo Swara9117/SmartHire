@@ -112,6 +112,17 @@ const Signup = () => {
               )}
             </span>
           </div>
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            className="p-3 bg-gray-700 border border-indigo-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            disabled={isLoading}
+          >
+            <option value="Candidate">Candidate</option>
+            <option value="Recruiter">Recruiter</option>
+          </select>
+          {formData.role === "Candidate" && (
             <div className="flex flex-col gap-4">
               <input
                 className="p-3 bg-gray-700 border border-indigo-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-300"
@@ -132,6 +143,7 @@ const Signup = () => {
                 disabled={isLoading}
               />
             </div>
+          )}
           <button
             type="submit"
             className={`mt-4 p-3 rounded-lg font-semibold text-white uppercase tracking-wide transition-colors ${
