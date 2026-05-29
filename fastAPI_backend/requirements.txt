@@ -5,3 +5,4 @@ requests
 google-generativeai
 gtts
 python-multipart
+pdfplumber
