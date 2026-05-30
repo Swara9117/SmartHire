@@ -24,7 +24,7 @@ const CandidateSignup = () => {
     setLoading(true);
     try {
       // Assuming backend runs on port 3000 or similar. We use relative URL or generic.
-      const res = await axios.post('http://localhost:3000/api/candidate/signup', formData);
+      const res = await axios.post('https://smarthire-odz9.onrender.com/api/candidate/signup', formData);
       toast.success("Signup successful! Scores have been imported.");
       
       // Navigate to leaderboard or profile, passing emailid state if needed

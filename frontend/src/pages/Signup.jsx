@@ -21,7 +21,7 @@ const Signup = () => {
   const sendOtpRegister = async (userData) => {
     try {
       setIsLoading(true);
-      const response = await fetch('http://localhost:4000/auth/sendOtp-register', {
+      const response = await fetch('https://smarthire-odz9.onrender.com/auth/sendOtp-register', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

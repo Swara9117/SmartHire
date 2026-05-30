@@ -213,7 +213,7 @@ const GDPractice = () => {
 
   // API Calls to Backend (now connected to Gemini)
   const fetchGDTopic = async (company, jobProfile) => {
-    const response = await fetch('http://localhost:4000/api/gd/generate-topic', {
+    const response = await fetch('https://smarthire-odz9.onrender.com/api/gd/generate-topic', {
       method: 'POST',
       headers: { 
       'Content-Type': 'application/json',
@@ -225,7 +225,7 @@ const GDPractice = () => {
   };
 
   const fetchAIResponse = async (topic, lastUserMessage, participant) => {
-    const response = await fetch('http://localhost:4000/api/gd/generate-response', {
+    const response = await fetch('https://smarthire-odz9.onrender.com/api/gd/generate-response', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -239,7 +239,7 @@ const GDPractice = () => {
   };
 
   const fetchInitialMessages = async (topic) => {
-    const response = await fetch('http://localhost:4000/api/gd/generate-initial-messages', {
+    const response = await fetch('https://smarthire-odz9.onrender.com/api/gd/generate-initial-messages', {
       method: 'POST',
       headers: { 
       'Content-Type': 'application/json',

@@ -17,7 +17,7 @@ const CandidateProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/api/candidate/profile/${emailid}`);
+        const res = await axios.get(`https://smarthire-odz9.onrender.com/api/candidate/profile/${emailid}`);
         setCandidate(res.data);
         setFormData({
           name: res.data.name,
@@ -37,7 +37,7 @@ const CandidateProfile = () => {
     e.preventDefault();
     setUpdating(true);
     try {
-      const res = await axios.put(`http://localhost:4000/api/candidate/profile/${emailid}`, formData);
+      const res = await axios.put(`https://smarthire-odz9.onrender.com/api/candidate/profile/${emailid}`, formData);
       setCandidate(res.data.candidate);
       setIsEditing(false);
       toast.success("Profile updated seamlessly! Scores synced.");

@@ -12,7 +12,7 @@ const CandidateLeaderboard = () => {
   useEffect(() => {
     const fetchLeaderboards = async () => {
       try {
-        const res = await axios.get('http://localhost:4000/api/candidate/leaderboards');
+        const res = await axios.get('https://smarthire-odz9.onrender.com/api/candidate/leaderboards');
         setData(res.data);
       } catch (err) {
         toast.error("Failed to fetch leaderboards.");

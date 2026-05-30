@@ -159,14 +159,14 @@ const TechnicalInterview = () => {
       setIsAITyping(true); 
       const formData = new FormData();
       formData.append('file', audioBlob, 'answer.webm');
-      const response = await fetch('http://localhost:8000/talk', {
+      const response = await fetch('https://fastapibackend-0tyi.onrender.com/talk', {
         method: 'POST',
         body: formData,
       });
       if (!response.ok) throw new Error('Failed to get next question');
       const data = await response.json();
       try {
-        const transcriptRes = await fetch('http://localhost:8000/last_transcript');
+        const transcriptRes = await fetch('https://fastapibackend-0tyi.onrender.com/last_transcript');
         if (transcriptRes.ok) {
           const transcriptData = await transcriptRes.json();
           if (transcriptData.transcript && transcriptData.transcript.trim()) {
@@ -201,7 +201,7 @@ const TechnicalInterview = () => {
     setLoading(true);
     setIsAITyping(true); 
     try {
-      const response = await fetch('http://localhost:8000/talk_text_full', {
+      const response = await fetch('https://fastapibackend-0tyi.onrender.com/talk_text_full', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answer: textAnswer })
@@ -299,7 +299,7 @@ const TechnicalInterview = () => {
   const handleEndInterview = async () => {
     setLoading(true);
     try {
-      await fetch('http://localhost:8000/end_interview', { method: 'POST' });
+      await fetch('https://fastapibackend-0tyi.onrender.com/end_interview', { method: 'POST' });
       setInterviewEnded(true);
       const feedbackRes = await fastAPIService.getFeedback();
       setFeedback(feedbackRes.data.feedback);

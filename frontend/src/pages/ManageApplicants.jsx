@@ -53,7 +53,7 @@ export default function ManageApplicants() {
                     </p>
                     {app.candidate?.resumeURL && (
                       <a
-                        href={`http://localhost:4000${app.candidate.resumeURL}`}
+                        href={`https://smarthire-odz9.onrender.com${app.candidate.resumeURL}`}
                         target="_blank"
                         rel="noreferrer"
                         className="text-indigo-400 text-sm hover:underline"

@@ -27,7 +27,7 @@ const NotificationBell = () => {
     // Set up WebSocket for real-time notifications
     const token = localStorage.getItem('token');
     if (token) {
-      const ws = new WebSocket(`ws://localhost:5000`);
+      const ws = new WebSocket(`wss://smarthire-odz9.onrender.com`);
       
       ws.onopen = () => {
         console.log('WebSocket connected');

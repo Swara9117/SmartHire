@@ -38,7 +38,7 @@ const VerifyOtpRegister = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:4000/auth/verify-register/${emailid}`, {
+      const response = await fetch(`https://smarthire-odz9.onrender.com/auth/verify-register/${emailid}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

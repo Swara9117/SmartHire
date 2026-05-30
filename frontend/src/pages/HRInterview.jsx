@@ -103,7 +103,7 @@ export default function HRInterview() {
             const formData = new FormData();
             formData.append('file', audioBlob, 'answer.webm');
             try {
-              const res = await fetch('http://localhost:8000/hr_interview/voice_answer', {
+              const res = await fetch('https://fastapibackend-0tyi.onrender.com/hr_interview/voice_answer', {
                 method: 'POST',
                 body: formData,
               });
@@ -139,7 +139,7 @@ export default function HRInterview() {
     setError("");
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:8000/hr_interview/start", {
+      const res = await fetch("https://fastapibackend-0tyi.onrender.com/hr_interview/start", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ company, role }),
@@ -163,7 +163,7 @@ export default function HRInterview() {
   // Play AI response as audio using /tts endpoint
   const playTTS = async (text) => {
     try {
-      const res = await fetch('http://localhost:8000/tts', {
+      const res = await fetch('https://fastapibackend-0tyi.onrender.com/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text }),
@@ -185,7 +185,7 @@ export default function HRInterview() {
     // Show user's answer in chat immediately
     setChat((prev) => [...prev, { role: "user", content: userInput }, { role: "system", content: "..." }]);
     try {
-      const res = await fetch("http://localhost:8000/hr_interview/answer", {
+      const res = await fetch("https://fastapibackend-0tyi.onrender.com/hr_interview/answer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answer: userInput, company, role }),
@@ -225,7 +225,7 @@ export default function HRInterview() {
     setAnswerLoading(true);
     setFeedback("");
     try {
-      const res = await fetch("http://localhost:8000/hr_interview/feedback", {
+      const res = await fetch("https://fastapibackend-0tyi.onrender.com/hr_interview/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ company, role }),

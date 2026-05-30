@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000';
-const FASTAPI_URL = 'http://localhost:8000';
+const API_URL = 'https://smarthire-odz9.onrender.com';
+const FASTAPI_URL = 'https://fastapibackend-0tyi.onrender.com';
 
 // Create axios instance with default config
 const api = axios.create({
