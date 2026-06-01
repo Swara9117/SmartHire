@@ -7,9 +7,11 @@ import nodemailer from "nodemailer";
 import dotenv from 'dotenv'; 
 import path from "path";
 import cloudinary from '../middleware/cloudinary.js';
+import { Resend } from 'resend';
 dotenv.config(); 
 
 const key=process.env.JWT_SECRET;
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 //register
 export const register = async (req, res) => {
@@ -104,18 +106,11 @@ export const sendOtpRegister = async (req, res) => {
     // Verify Email Server
     await transporter.verify();
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+    await resend.emails.send({
+      from: 'SmartHire <onboarding@resend.dev>',
       to: emailid,
-      subject: "User email verification",
-      text: `Your One-Time Password (OTP) for email verification is: ${user.otp}.
-
-This OTP is valid for 10 minutes. Please do not share it with anyone.
-
-If you did not request this, please ignore this email.
-
-Thank you,  
-SmartHire`,
+      subject: 'User email verification',
+      text: `Your OTP is: ${user.otp}`
     });
 
     return res.status(200).json({ message: "OTP sent successfully" });
