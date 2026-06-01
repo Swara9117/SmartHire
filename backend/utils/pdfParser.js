@@ -12,7 +12,7 @@ const extractTextFromPDF = async (pdfBuffer) => {
     }
     return text;
   } catch (error) {
-    console.error('Error extracting text from PDF:', error);
+    console.error('Error extracting text from PDF DETAILED:', error.message, error.stack);
     throw new Error('Failed to extract text from PDF');
   }
 };
