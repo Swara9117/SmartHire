@@ -39,7 +39,7 @@ import path from "path";
 //cors for both fasAPI_backend and frontend
 
 app.use(cors({
-  origin: "https://smart-hire-ruby-eta.vercel.app/",
+  origin: "https://smart-hire-vnhi.vercel.app/",
   credentials: true
 }));
 
