@@ -1,26 +1,16 @@
-// import pdf from 'pdf-parse';
-
-// const extractTextFromPDF = async (pdfBuffer) => {
-//   try {
-//     const data = await pdf(pdfBuffer);
-//     return data.text;
-//   } catch (error) {
-//     console.error('Error extracting text from PDF:', error);
-//     throw new Error('Failed to extract text from PDF');
-//   }
-// };
-
-// export { extractTextFromPDF };
-
-
-// ❌ Remove this top-level import
-// import pdf from 'pdf-parse';
-
 const extractTextFromPDF = async (pdfBuffer) => {
   try {
-    const { default: pdf } = await import('pdf-parse'); // ✅ lazy import
-    const data = await pdf(pdfBuffer);
-    return data.text;
+    const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+    const loadingTask = pdfjsLib.getDocument({ data: pdfBuffer });
+    const pdf = await loadingTask.promise;
+    
+    let text = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const content = await page.getTextContent();
+      text += content.items.map(item => item.str).join(' ') + '\n';
+    }
+    return text;
   } catch (error) {
     console.error('Error extracting text from PDF:', error);
     throw new Error('Failed to extract text from PDF');
