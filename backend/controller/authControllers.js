@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import Pw_Reset from "../models/forgotpassword.js";
 import calculateScore from "../utils/scraper.js";
-import nodemailer from "nodemailer";
 import dotenv from 'dotenv'; 
 import path from "path";
 import cloudinary from '../middleware/cloudinary.js';
@@ -11,7 +10,6 @@ import { Resend } from 'resend';
 dotenv.config(); 
 
 const key=process.env.JWT_SECRET;
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 //register
 export const register = async (req, res) => {
@@ -70,18 +68,16 @@ export const sendOtpRegister = async (req, res) => {
         return res.status(400).json({ message: "User already registered. Please log in." });
       }
 
-      // If user exists but is not verified, update OTP
       user.otp = Math.floor(100000 + Math.random() * 900000).toString();
       user.otpExpires = new Date(Date.now() + 10 * 60 * 1000);
       if (leetcodeUsername) user.leetcodeUsername = leetcodeUsername;
       if (gfgUsername) user.gfgUsername = gfgUsername;
       await user.save();
     } else {
-      // Create new user with all fields
       user = new User({
         emailid,
         username,
-        password, // Will be hashed after OTP verification
+        password,
         role,
         isVerified: false,
         leetcodeUsername: leetcodeUsername || "",
@@ -92,25 +88,19 @@ export const sendOtpRegister = async (req, res) => {
       await user.save();
     }
 
-    // Configure Email
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    // Verify Email Server
-    await transporter.verify();
-
+    const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
       from: 'SmartHire <onboarding@resend.dev>',
       to: emailid,
       subject: 'User email verification',
-      text: `Your OTP is: ${user.otp}`
+      text: `Your One-Time Password (OTP) for email verification is: ${user.otp}.
+
+This OTP is valid for 10 minutes. Please do not share it with anyone.
+
+If you did not request this, please ignore this email.
+
+Thank you,
+SmartHire`,
     });
 
     return res.status(200).json({ message: "OTP sent successfully" });
@@ -149,14 +139,12 @@ export const VerifyRegister = async (req, res) => {
       return res.status(400).json({ message: "OTP expired. Please register again." });
     }
 
-    // Hash password and mark user as verified
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
     user.isVerified = true;
     user.otp = undefined;
     user.otpExpires = undefined;
 
-    // Calculate scores if role is Candidate and usernames are present
     if (user.role === "Candidate" && (user.leetcodeUsername || user.gfgUsername)) {
       console.log(`Scraping scores for ${user.leetcodeUsername} & ${user.gfgUsername}`);
       const { totalScore, leetcodeScore, gfgScore } = await calculateScore(user.leetcodeUsername, user.gfgUsername);
@@ -188,7 +176,6 @@ export const login = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    // Check if user is verified
     if (!currentUser.isVerified) {
       return res.status(401).json({ 
         success: false, 
@@ -230,25 +217,22 @@ export const details=async(req,resp)=>{
         resp.json({username:currentUser.username});
     } catch (error) {
         console.log("there has been an error ", error);
-        resp.status(500).js({message: "there has been an error oopsie poopsie"});
+        resp.status(500).json({message: "there has been an error"});
     }
 }
 
 // Upload profile image
 export const uploadProfileImage = async (req, res) => {
   try {
-    // Get the file from req.file (if using multer memoryStorage) or req.body (if base64)
     const file = req.file;
     if (!file) return res.status(400).json({ success: false, message: 'No file uploaded' });
 
-    // Upload to Cloudinary
     const result = await cloudinary.uploader.upload(file.path, {
       folder: 'profile_pics',
       public_id: req.user.id,
       overwrite: true,
     });
 
-    // Save the Cloudinary URL in the user model
     const user = await User.findByIdAndUpdate(
       req.user.id,
       { image: result.secure_url },
@@ -275,7 +259,7 @@ export const sendOtp = async (req, res) => {
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
-    const expires = new Date(Date.now() + 10 * 60 * 1000); // Expires in 10 minutes
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
 
     await Pw_Reset.findOneAndUpdate(
       { emailid },
@@ -283,37 +267,15 @@ export const sendOtp = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    // Check if email credentials are set in .env
-    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-      // Configure and send email
-      const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    await resend.emails.send({
+      from: 'SmartHire <onboarding@resend.dev>',
+      to: emailid,
+      subject: "Password Reset OTP",
+      text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`,
+    });
 
-      await transporter.verify(); // Verify connection
-
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: emailid,
-        subject: "Password Reset OTP",
-        text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`,
-      });
-
-      return res.status(200).json({ message: "OTP sent successfully to your email." });
-    } else {
-      // If no email credentials, log OTP to console for testing
-      console.log("************************************************************");
-      console.log("**** EMAIL_USER or EMAIL_PASS not set in .env file.     ****");
-      console.log(`**** OTP for ${emailid} is: ${otp}                      ****`);
-      console.log("************************************************************");
-      return res.status(200).json({ message: "OTP generated for testing. Check backend console." });
-    }
+    return res.status(200).json({ message: "OTP sent successfully to your email." });
 
   } catch (error) {
     console.error("Error in sendOtp controller:", error);
@@ -331,7 +293,6 @@ export const verifyOtp = async (req, res) => {
       return res.status(400).json({ success: false, message: "Email and OTP are required" });
     }
 
-    // Fetch OTP Record
     const record = await Pw_Reset.findOne({ emailid });
 
     if (!record) {
@@ -374,4 +335,3 @@ export const resetPassword = async (req, res) => {
     return res.status(500).json({ message: "Error resetting password", details: error.message });
   }
 };
-
