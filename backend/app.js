@@ -39,9 +39,8 @@ import path from "path";
 //cors for both fasAPI_backend and frontend
 
 app.use(cors({
-  origin: [FRONTEND_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'],
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  credentials: true,
+  origin: "https://smart-hire-ruby-eta.vercel.app/",
+  credentials: true
 }));
 
 // Rate limiting
