@@ -3,13 +3,25 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import Pw_Reset from "../models/forgotpassword.js";
 import calculateScore from "../utils/scraper.js";
+import nodemailer from "nodemailer";
 import dotenv from 'dotenv'; 
 import path from "path";
 import cloudinary from '../middleware/cloudinary.js';
-import { Resend } from 'resend';
 dotenv.config(); 
 
 const key=process.env.JWT_SECRET;
+
+const createTransporter = () => {
+  return nodemailer.createTransport({
+    host: 'smtp-relay.brevo.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.BREVO_SMTP_USER,
+      pass: process.env.BREVO_SMTP_PASS,
+    },
+  });
+};
 
 //register
 export const register = async (req, res) => {
@@ -88,9 +100,9 @@ export const sendOtpRegister = async (req, res) => {
       await user.save();
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: 'SmartHire <onboarding@resend.dev>',
+    const transporter = createTransporter();
+    await transporter.sendMail({
+      from: '"SmartHire" <ad6186001@smtp-brevo.com>',
       to: emailid,
       subject: 'User email verification',
       text: `Your One-Time Password (OTP) for email verification is: ${user.otp}.
@@ -267,9 +279,9 @@ export const sendOtp = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    const resend = new Resend(process.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: 'SmartHire <onboarding@resend.dev>',
+    const transporter = createTransporter();
+    await transporter.sendMail({
+      from: '"SmartHire" <ad6186001@smtp-brevo.com>',
       to: emailid,
       subject: "Password Reset OTP",
       text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`,
