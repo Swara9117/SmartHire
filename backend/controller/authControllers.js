@@ -18,7 +18,7 @@ const sendEmail = async (to, subject, text) => {
       'api-key': process.env.BREVO_API_KEY,
     },
     body: JSON.stringify({
-      sender: { name: 'SmartHire', email: 'ad6186001@smtp-brevo.com' },
+      sender: { name: 'SmartHire', email: 'saojiswara@gmail.com' },
       to: [{ email: to }],
       subject,
       textContent: text,
