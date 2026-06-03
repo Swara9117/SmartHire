@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import Pw_Reset from "../models/forgotpassword.js";
 import calculateScore from "../utils/scraper.js";
-import nodemailer from "nodemailer";
 import dotenv from 'dotenv'; 
 import path from "path";
 import cloudinary from '../middleware/cloudinary.js';
@@ -11,16 +10,25 @@ dotenv.config();
 
 const key=process.env.JWT_SECRET;
 
-const createTransporter = () => {
-  return nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.BREVO_SMTP_USER,
-      pass: process.env.BREVO_SMTP_PASS,
+const sendEmail = async (to, subject, text) => {
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': process.env.BREVO_API_KEY,
     },
+    body: JSON.stringify({
+      sender: { name: 'SmartHire', email: 'ad6186001@smtp-brevo.com' },
+      to: [{ email: to }],
+      subject,
+      textContent: text,
+    }),
   });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(`Brevo API error: ${JSON.stringify(error)}`);
+  }
 };
 
 //register
@@ -100,20 +108,11 @@ export const sendOtpRegister = async (req, res) => {
       await user.save();
     }
 
-    const transporter = createTransporter();
-    await transporter.sendMail({
-      from: '"SmartHire" <ad6186001@smtp-brevo.com>',
-      to: emailid,
-      subject: 'User email verification',
-      text: `Your One-Time Password (OTP) for email verification is: ${user.otp}.
-
-This OTP is valid for 10 minutes. Please do not share it with anyone.
-
-If you did not request this, please ignore this email.
-
-Thank you,
-SmartHire`,
-    });
+    await sendEmail(
+      emailid,
+      'User email verification',
+      `Your One-Time Password (OTP) for email verification is: ${user.otp}.\n\nThis OTP is valid for 10 minutes. Please do not share it with anyone.\n\nThank you,\nSmartHire`
+    );
 
     return res.status(200).json({ message: "OTP sent successfully" });
 
@@ -279,13 +278,11 @@ export const sendOtp = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    const transporter = createTransporter();
-    await transporter.sendMail({
-      from: '"SmartHire" <ad6186001@smtp-brevo.com>',
-      to: emailid,
-      subject: "Password Reset OTP",
-      text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`,
-    });
+    await sendEmail(
+      emailid,
+      'Password Reset OTP',
+      `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`
+    );
 
     return res.status(200).json({ message: "OTP sent successfully to your email." });
 
